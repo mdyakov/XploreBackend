@@ -7,7 +7,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = os.environ.get('DEBUG')
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'xplore-backend-staging.herokuapp.com', 'xplore-backend-production.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'xplore-backend-staging.herokuapp.com', 'xplore-backend-production.herokuapp.com']
 
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
@@ -28,6 +28,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'ProEP_API.urls'
