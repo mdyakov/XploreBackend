@@ -7,7 +7,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = os.environ.get('DEBUG')
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'xplore-backend-staging.herokuapp.com', 'xplore-backend-production.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'xplore-backend-staging.herokuapp.com', 'xplore-backend-production.herokuapp.com']
 
 INSTALLED_APPS = [
     'users_API.apps.UsersApiConfig',
@@ -27,6 +27,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'ProEP_API.urls'
@@ -72,6 +73,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -81,11 +84,5 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-STATIC_URL = '/static/'
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', False)
 
 django_heroku.settings(locals())
