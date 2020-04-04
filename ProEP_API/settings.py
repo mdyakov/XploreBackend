@@ -84,4 +84,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', False)
+
 django_heroku.settings(locals())
