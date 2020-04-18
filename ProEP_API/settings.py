@@ -8,10 +8,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = (os.environ.get('DEBUG') == 'True')
 
-if DEBUG:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
-else:
-    ALLOWED_HOSTS = ['xplore-backend-production.herokuapp.com', 'xplore-backend-staging.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'xplore-backend-production.herokuapp.com', 'xplore-backend-staging.herokuapp.com']
 
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
@@ -66,6 +63,9 @@ DATABASES = {
     }
 }
 
+if not DEBUG:
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -83,9 +83,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-us' 
 
 TIME_ZONE = 'UTC'
 
