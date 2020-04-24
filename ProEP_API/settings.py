@@ -23,13 +23,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
 ROOT_URLCONF = 'ProEP_API.urls'
@@ -53,7 +53,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ProEP_API.wsgi.application'
 
 DATABASES = {}
-DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+
+if DEBUG:
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=False)
+else:
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+    django_heroku.settings(locals())
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -72,6 +77,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 LANGUAGE_CODE = 'en-us' 
 
 TIME_ZONE = 'UTC'
@@ -81,5 +90,3 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-django_heroku.settings(locals())

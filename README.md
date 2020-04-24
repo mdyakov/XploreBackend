@@ -24,7 +24,7 @@ If your output contains file **manage.py**, then you are in the right folder.
 Now you need to install all the requirements which can be done by running following command:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-$ pip install -r requirement.txt
+$ pip install -r requirements.txt
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Before you proceed, you are required to have 2 environmental variables. 
