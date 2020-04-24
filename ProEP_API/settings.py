@@ -54,17 +54,9 @@ WSGI_APPLICATION = 'ProEP_API.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME'),  
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT')
+        'ENGINE': 'django.db.backends.postgresql_psycopg2'
     }
 }
-
-if not DEBUG:
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -94,3 +86,5 @@ USE_L10N = True
 USE_TZ = True
 
 django_heroku.settings(locals())
+
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
