@@ -1,6 +1,6 @@
 import os
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ProEP_API.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'xplore_api.settings')
 
 application = get_asgi_application()

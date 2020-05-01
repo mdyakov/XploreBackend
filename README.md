@@ -43,6 +43,12 @@ However, to run them, you need to start CMD as an administrator.
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     $ setx -m SECRET_KEY "<Key you found on Heroku>"
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    $ setx -m RAPID_API_HOST "<Host you found on Heroku>"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    $ setx -m RAPID_API_KEY "<Key you found on Heroku>"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    $ setx -m RAPID_API_URL "<Url you found on Heroku>"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 And finally, after all environmentals are set and requirements installed, you can run the server.
@@ -57,11 +63,11 @@ Structure
 
 Structure of the project's folders:
 
--   ProEP_API - main project folder, from where you define settings of the
-    project.
+-   xplore_api - main project folder, from where you define settings of the project.
 
--   users_API - first API folder, related to users. Responsible for REST of
-    users and authentication.
+-   users_api - responsible for REST of users and authentication.
+
+    games_api - responsible for REST of games.
 
 -   *manage*.*py* - command file responsible for compiling and running the
     project, creating apps, and other functionality.

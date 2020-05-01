@@ -1,1 +1,1 @@
-web: gunicorn ProEP_API.wsgi
+web: gunicorn xplore_api.wsgi
