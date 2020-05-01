@@ -14,13 +14,7 @@ class GetNewTrendingGames(APIView):
         query = f'dates={fromDate},{toDate}&ordering=-rating&page_size=10'
         print(query)
         results = get_json('games', query)['results']
-        #games = []
-
-        # print(results)
-
-        # for game_object in json.loads(json.dumps(results)):
-        #     games.append(get_serialized_result(game_object, True))
-
+        
         return Response(get_serialized_result(results, True))
        
 
@@ -34,14 +28,7 @@ class GetGame(APIView):
 
 
 def get_serialized_result(json, many=False):
-    # game = Game(json['id'], 
-    #     json['name'], 
-    #     json['background_image'], 
-    #     json['released'], json['rating'],
-    #     json['stores'])
-
-    print(json)
-    serializer = GameSerializer(data=json, many=True)
+    serializer = GameSerializer(data=json, many=many)
     serializer.is_valid()
-    print(serializer.validated_data)
-    return serializer.validated_data
+    
+    return serializer.validated_data    
