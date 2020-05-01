@@ -8,7 +8,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = os.environ.get('DEBUG')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'xplore-backend-production.herokuapp.com', 'xplore-backend-staging.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1',
+                 'xplore-backend-production.herokuapp.com', 'xplore-backend-staging.herokuapp.com']
 
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
@@ -20,12 +21,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework'
+    'rest_framework',  # Django REST
+    'rest_framework.authtoken',  # Required for Token authentication.
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 10  # MAX AMMOUNT of objects send with one request.
 }
 
 MIDDLEWARE = [
@@ -53,11 +55,12 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-        },  
+        },
     },
 ]
 
 WSGI_APPLICATION = 'xplore_api.wsgi.application'
+
 
 DATABASES = {
     'default': {
@@ -69,7 +72,6 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT')
     }
 }
-
 if not DEBUG:
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
     django_heroku.settings(locals())
