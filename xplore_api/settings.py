@@ -13,7 +13,8 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1',
 
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
-    'users_API.apps.UsersApiConfig',
+    'users_api.apps.UsersApiConfig',
+    'games_api.apps.GamesApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -29,16 +30,16 @@ REST_FRAMEWORK = {
 }
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
-ROOT_URLCONF = 'ProEP_API.urls'
+ROOT_URLCONF = 'xplore_api.urls'
 
 TEMPLATES = [
     {
@@ -56,7 +57,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ProEP_API.wsgi.application'
+WSGI_APPLICATION = 'xplore_api.wsgi.application'
 
 
 DATABASES = {
@@ -70,15 +71,8 @@ DATABASES = {
     }
 }
 if not DEBUG:
-    DATABASES['default'] = dj_database_url.config(
-        conn_max_age=600, ssl_require=True)
-# DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=False)
-
-# if DEBUG:
-#     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=False)
-# else:
-#     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=False)
-#     django_heroku.settings(locals())
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+    django_heroku.settings(locals())
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -97,7 +91,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
-LANGUAGE_CODE = 'en-us'
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+LANGUAGE_CODE = 'en-us' 
 
 TIME_ZONE = 'UTC'
 
@@ -107,4 +105,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-django_heroku.settings(locals())
+RAPID_API_URL = os.environ.get('RAPID_API_URL')
+
+RAPID_API_HOST = os.environ.get('RAPID_API_HOST')
+
+RAPID_API_KEY = os.environ.get('RAPID_API_KEY')
