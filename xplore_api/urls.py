@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from games_api import urls
 from rest_framework import routers
-from users_API import views as user_views
+from users_api import views as user_views
 from rest_framework.authtoken.views import obtain_auth_token
 
 router = routers.DefaultRouter()
