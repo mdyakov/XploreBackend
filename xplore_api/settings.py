@@ -62,19 +62,20 @@ TEMPLATES = [
 WSGI_APPLICATION = 'xplore_api.wsgi.application'
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT')
-    }
-}
-if not DEBUG:
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-    django_heroku.settings(locals())
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': os.environ.get('DB_NAME'),
+#         'USER': os.environ.get('DB_USER'),
+#         'PASSWORD': os.environ.get('DB_PASSWORD'),
+#         'HOST': os.environ.get('DB_HOST'),
+#         'PORT': os.environ.get('DB_PORT')
+#     }
+# }
+
+# if not DEBUG:
+DATABASES = {}
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -112,3 +113,8 @@ RAPID_API_URL = os.environ.get('RAPID_API_URL')
 RAPID_API_HOST = os.environ.get('RAPID_API_HOST')
 
 RAPID_API_KEY = os.environ.get('RAPID_API_KEY')
+
+django_heroku.settings(locals())
+
+if DEBUG:
+    del DATABASES['default']['OPTIONS']['sslmode']
