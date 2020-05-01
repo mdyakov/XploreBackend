@@ -76,8 +76,6 @@ WSGI_APPLICATION = 'xplore_api.wsgi.application'
 # if not DEBUG:
 DATABASES = {}
 DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-django_heroku.settings(locals())
-del DATABASES['default']['OPTIONS']['sslmode']
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -115,3 +113,8 @@ RAPID_API_URL = os.environ.get('RAPID_API_URL')
 RAPID_API_HOST = os.environ.get('RAPID_API_HOST')
 
 RAPID_API_KEY = os.environ.get('RAPID_API_KEY')
+
+django_heroku.settings(locals())
+
+if DEBUG:
+    del DATABASES['default']['OPTIONS']['sslmode']
