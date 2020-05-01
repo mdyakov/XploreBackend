@@ -1,10 +1,10 @@
 # from django.shortcuts import render
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, permissions, authentication, status
 from rest_framework.decorators import action, api_view, renderer_classes
 from rest_framework.response import Response
-from users_API.serializers import UserSerializer, GroupSerializer
+from users_API.serializers import UserSerializer
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
@@ -50,12 +50,3 @@ def logout(request):
     # logout(request)
     return Response(data={"success": "Successfully logged out."},
                     status=status.HTTP_200_OK)
-
-
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
