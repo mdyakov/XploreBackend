@@ -12,14 +12,15 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'xplore-backend-production.herokuapp.
 
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
-    'users_API.apps.UsersApiConfig',
+    'users_api.apps.UsersApiConfig',
+    'games_api.apps.GamesApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
+    'rest_framework'
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -36,7 +37,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
-ROOT_URLCONF = 'ProEP_API.urls'
+ROOT_URLCONF = 'xplore_api.urls'
 
 TEMPLATES = [
     {
@@ -54,13 +55,20 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ProEP_API.wsgi.application'
+WSGI_APPLICATION = 'xplore_api.wsgi.application'
 
-DATABASES = {}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT')
+    }
+}
 
-if DEBUG:
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=False)
-else:
+if not DEBUG:
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
     django_heroku.settings(locals())
 
@@ -94,3 +102,9 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+RAPID_API_URL = os.environ.get('RAPID_API_URL')
+
+RAPID_API_HOST = os.environ.get('RAPID_API_HOST')
+
+RAPID_API_KEY = os.environ.get('RAPID_API_KEY')
