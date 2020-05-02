@@ -77,4 +77,23 @@ Super User created.
 
 Credentials: - Username: *admin* - Password: *Orange*
 
-test
+Users API
+----------
+
+Below you will find endpoints for the *Users* part of the API. All links follow same template, which is: *origin_url*/**users**/<endpoint>/ 
+
+- <> - GET method - requires token - returns all users
+
+- <> - POST method - requires username in body - creates a new user based on the information sent - possible parameters: username, password, email, groups
+
+- **login** - GET method - returns token which you have to include in headers in all future calls(except for registering a new user)
+
+- **logout** - POST method - requires token in headers - deletes the token, sent
+
+- **\<username\>** - GET method - requires token - returns a user with provided username
+
+- **\<username\>** - PUT method - requires token - changes a user with provided username for a new user
+
+- **\<username\>** - PATCH method - requires token - updates a user with provided username with values from body
+
+- **\<username\>** - DELETE method - requires token - deletes a user with provided username
