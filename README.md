@@ -80,7 +80,7 @@ Credentials: - Username: *admin* - Password: *Orange*
 Users API
 ----------
 
-Below you will find endpoints for the *Users* part of the API. All links follow same template, which is: *origin_url*/**users**/<endpoint>/ 
+Below you will find endpoints for the *Users* part of the API. All links follow same template, which is: *origin_url*/**users**/\<endpoint\>/ 
 
 - <> - GET method - requires token - returns all users
 
