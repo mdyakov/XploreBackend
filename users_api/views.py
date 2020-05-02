@@ -7,7 +7,8 @@ from rest_framework.response import Response
 from users_api.serializers import UserSerializer
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
-
+from rest_framework.authtoken.models import Token
+from django.http import HttpResponse, JsonResponse
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -27,6 +28,15 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(data={"success": "Successfully logged out."},
                         status=status.HTTP_200_OK)
         
+    @action(detail=False, methods=['GET'], url_path='me', url_name='me')
+    def get_token_user(self, request):
+        # print(request.user)
+        serializer_context = {
+            'request': request,
+        }
+        user = Token.objects.get(key=request.user.auth_token).user
+        print(user)
+        return JsonResponse(UserSerializer(instance=user, context=serializer_context).data, safe=False)
     def get_permissions(self):
         """
         Instantiates and returns the list of permissions that this view requires.
