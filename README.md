@@ -90,10 +90,10 @@ Below you will find endpoints for the *Users* part of the API. All links follow 
 
 - **logout** - POST method - requires token in headers - deletes the token, sent
 
-- **<username>** - GET method - requires token - returns a user with provided username
+- **\<username\>** - GET method - requires token - returns a user with provided username
 
-- **<username>** - PUT method - requires token - changes a user with provided username for a new user
+- **\<username\>** - PUT method - requires token - changes a user with provided username for a new user
 
-- **<username>** - PATCH method - requires token - updates a user with provided username with values from body
+- **\<username\>** - PATCH method - requires token - updates a user with provided username with values from body
 
-- **<username>** - DELETE method - requires token - deletes a user with provided username
+- **\<username\>** - DELETE method - requires token - deletes a user with provided username
