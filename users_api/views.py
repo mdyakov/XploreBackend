@@ -27,9 +27,6 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(data={"success": "Successfully logged out."},
                         status=status.HTTP_200_OK)
         
-    def destroy(self, request, *args, **kwargs):
-        return super().destroy(request, *args, **kwargs)
-
     def get_permissions(self):
         """
         Instantiates and returns the list of permissions that this view requires.
