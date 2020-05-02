@@ -90,6 +90,8 @@ Below you will find endpoints for the *Users* part of the API. All links follow 
 
 - **logout** - POST method - requires token in headers - deletes the token, sent
 
+- **me** - GET method - requires token in headers - returns a user that owns the token sent in headers
+
 - **\<username\>** - GET method - requires token - returns a user with provided username
 
 - **\<username\>** - PUT method - requires token - changes a user with provided username for a new user
