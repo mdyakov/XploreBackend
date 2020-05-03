@@ -1,8 +1,14 @@
 import os
 import django_heroku
 import dj_database_url
+import pickle 
+import pandas as pd
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+RECOMMENDATIONS_DATA = pd.read_csv("data.csv")
+
+KNN_MODEL =  pickle.load(open(os.path.join(BASE_DIR, 'knn'), 'rb'))
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
