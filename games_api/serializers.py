@@ -16,3 +16,11 @@ class GameSerializer(serializers.Serializer):
     released = serializers.CharField(max_length=20)
     rating = serializers.FloatField()
     stores = StoresSerializer(many=True, required=False)
+
+class GenresSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
+
+class GameRecommendationsSerializer(serializers.Serializer):
+    metacritic = serializers.FloatField()
+    released = serializers.CharField(max_length=20)
+    genres = GenresSerializer(many=True, required=False)
