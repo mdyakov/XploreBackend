@@ -1,6 +1,8 @@
 ProEP_Backend
 =============
 
+Deployed URL for the back end : https://xplore-backend-staging.herokuapp.com
+
 This is a Django project created for the ProEP project. It represents Backend
 part of the project.
 
