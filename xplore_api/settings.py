@@ -8,11 +8,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 RECOMMENDATIONS_DATA = pd.read_csv("data.csv")
 
-KNN_MODEL =  pickle.load(open(os.path.join(BASE_DIR, 'knn'), 'rb'))
+KNN_MODEL = pickle.load(open(os.path.join(BASE_DIR, 'knn'), 'rb'))
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = os.environ.get('DEBUG')
+DEBUG = (bool)(True if os.environ.get('DEBUG') == 'True' else False)
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1',
                  'xplore-backend-production.herokuapp.com', 'xplore-backend-staging.herokuapp.com']
@@ -67,18 +67,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'xplore_api.wsgi.application'
 
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': os.environ.get('DB_NAME'),
-#         'USER': os.environ.get('DB_USER'),
-#         'PASSWORD': os.environ.get('DB_PASSWORD'),
-#         'HOST': os.environ.get('DB_HOST'),
-#         'PORT': os.environ.get('DB_PORT')
-#     }
-# }
-# if not DEBUG:
 DATABASES = {}
 DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
