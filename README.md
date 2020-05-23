@@ -36,22 +36,22 @@ However, to run them, you need to start CMD as an administrator.
 
 -   DEBUG - can **true** or **false**. Responsible for whether to run your app in debuging mode. 
     In this mode all errors are shown with more metadata. While in development should be true. In production false.
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     $ setx -m DEBUG "<Your choice>"
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -   SECRET_CODE - it's a special string that you used to encrypt project's internal messaging.
     It can be found on the Heroku site. 
     Log In with corresponding credintials > Go to staging > Settings > Config Vars > Secret Key
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    $ setx -m SECRET_KEY "<Key you found on Heroku>"
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    $ setx -m RAPID_API_HOST "<Host you found on Heroku>"
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    $ setx -m RAPID_API_KEY "<Key you found on Heroku>"
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    $ setx -m RAPID_API_URL "<Url you found on Heroku>"
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    $ setx -m SECRET_KEY "\<Key you found on Heroku>"
+
+    $ setx -m RAPID_API_HOST "\<Hosts you found on Heroku>"
+
+    $ setx -m RAPID_API_KEY "\<Key you found on Heroku>"
+
+    $ setx -m RAPID_API_URL "\<Url you found on Heroku>"
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 And finally, after all environmentals are set and requirements installed, you can run the server.
 Following command runs the server:
@@ -69,7 +69,7 @@ Structure of the project's folders:
 
 -   users_api - responsible for REST of users and authentication.
 
-    games_api - responsible for REST of games.
+-   games_api - responsible for REST of games.
 
 -   *manage*.*py* - command file responsible for compiling and running the
     project, creating apps, and other functionality.
@@ -88,7 +88,7 @@ Below you will find endpoints for the *Users* part of the API. All links follow 
 
 - <> - POST method - requires username in body - creates a new user based on the information sent - possible parameters: username, password, email, groups
 
-- **login** - GET method - returns token which you have to include in headers in all future calls(except for registering a new user)
+- **login** - POST method - returns token which you have to include in headers in all future calls(except for registering a new user)
 
 - **logout** - POST method - requires token in headers - deletes the token, sent
 
