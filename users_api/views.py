@@ -7,46 +7,42 @@ from rest_framework.response import Response
 from users_api.serializers import UserSerializer
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from rest_framework.authtoken.models import Token
+from django.http import HttpResponse, JsonResponse
 
 class UserViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows users to be viewed or edited. Also covers for the logout
     """
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    lookup_field = 'username'
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = (authentication.TokenAuthentication,)
-    # def list(self, request):
-    #     queryset = User.objects.all().order_by('-date_joined')
-    #     serializer = UserSerializer(queryset, many=True)
-    #     return Response(serializer.data)
-    @action(detail=False, methods=['POST'])
+    @action(detail=False, methods=['POST'], url_path='logout', url_name='logout')
     def logout(self, request):
-        print("hi")
-    # @action(detail=True, username='')
-    # def retrieve(self, request, pk=None):
-    #     # print(username)
-    #     queryset = User.objects.all()
-    #     user = get_object_or_404(queryset, username='maruf')
-    #     user
-    #     serializer = UserSerializer(user)
-    #     return Response(serializer.data)
-
-
-@api_view(('POST',))
-def logout(request):
-    authentication_classes = (authentication.TokenAuthentication,)
-    print("hi")
-    print(request.content_type)
-    from rest_framework.authtoken.models import Token
-    user = Token.objects.get(key='54e4435c4e43d223f8939fe276870c7848ca1fe8').user
-    print(user.auth.token)
-    try:
-        request.user.auth_token.delete()
-        print(request.user.auth_token)
-
-    except(AttributeError, ObjectDoesNotExist):
-        pass
-    # logout(request)
-    return Response(data={"success": "Successfully logged out."},
-                    status=status.HTTP_200_OK)
+        try:
+            request.user.auth_token.delete()
+        except(AttributeError, ObjectDoesNotExist):
+            pass
+        return Response(data={"success": "Successfully logged out."},
+                        status=status.HTTP_200_OK)
+        
+    @action(detail=False, methods=['GET'], url_path='me', url_name='me')
+    def get_token_user(self, request):
+        # print(request.user)
+        serializer_context = {
+            'request': request,
+        }
+        user = Token.objects.get(key=request.user.auth_token).user
+        print(user)
+        return JsonResponse(UserSerializer(instance=user, context=serializer_context).data, safe=False)
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create':
+            permission_classes = [permissions.AllowAny]
+        else:
+            permission_classes = [permissions.IsAuthenticated]
+        return [permission() for permission in permission_classes]
