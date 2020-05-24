@@ -19,7 +19,6 @@ def get_json(endpoint, query=None):
     if query:
         url = url + f'?{query}'
 
-    print(url)
     response = requests.get(url, headers=headers)
     return get_response_result(response)
 
