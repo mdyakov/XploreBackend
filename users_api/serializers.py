@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from .models import Wishlist, Game, Favorites
+from .models import Wishlist, Game, Favorites, Friends
 from rest_framework import serializers
 
 
@@ -13,6 +13,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         user = User.objects.create_user(**validated_data)
         Wishlist.objects.create(user=user)
         Favorites.objects.create(user=user)
+        Friends.objects.create(user=user)
         return user
 
     class Meta:
@@ -40,3 +41,10 @@ class FavoritesSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Favorites
         fields = ['user','games']
+
+class FriendsSerializer(serializers.HyperlinkedModelSerializer):
+    user = UserSerializer(read_only=True)
+    friends = UserSerializer(default=None, required=False, many=True)
+    class Meta:
+        model = Friends
+        fields = ['user', 'friends']

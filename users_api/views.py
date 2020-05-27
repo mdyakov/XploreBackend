@@ -4,13 +4,13 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, permissions, authentication, status
 from rest_framework.decorators import action, api_view, renderer_classes
 from rest_framework.response import Response
-from users_api.serializers import UserSerializer, GameSerializer, WishlistSerializer, FavoritesSerializer
+from users_api.serializers import UserSerializer, GameSerializer, WishlistSerializer, FavoritesSerializer, FriendsSerializer
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.authtoken.models import Token
 from django.http import HttpResponse, JsonResponse
 from .permissions import IsOwner
-from .models import Game, Favorites, Wishlist
+from .models import Game, Favorites, Wishlist, Friends
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -43,10 +43,15 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['GET', 'POST', 'DELETE'], url_path='wishlist', url_name='wishlist')
     def wishlist(self, request, username=None):
+        token_user = User.objects.get(username=request.user.username)
+        friends_list = Friends.objects.get(user=token_user)
+        user = User.objects.get(username=username)
         if request.user.username != username:
             return Response(data={"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
-
-        user = User.objects.get(username=username)
+        elif user in friends_list.friends.all():
+            wishlist = Wishlist.objects.get(user=user)
+            return JsonResponse(WishlistSerializer(instance=wishlist, context=serializer_context).data, safe=False)
+        
         wishlist = Wishlist.objects.get(user=user)
         serializer_context = {
             'request': request,
@@ -67,10 +72,16 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['GET', 'POST', 'DELETE'], url_path='favorites', url_name='favorites')
     def get_favorites(self, request, username=None):
+        token_user = User.objects.get(username=request.user.username)
+        friends_list = Friends.objects.get(user=token_user)
+        user = User.objects.get(username=username)
+        print("??",user not in friends_list.friends.all())
         if request.user.username != username:
             return Response(data={"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
-
-        user = User.objects.get(username=username)
+        elif user in friends_list.friends.all():
+            favorites = Favorites.objects.get(user=user)
+            return JsonResponse(FavoritesSerializer(instance=favorites, context=serializer_context).data, safe=False)  
+        
         favorites = Favorites.objects.get(user=user)
         serializer_context = {
             'request': request,
@@ -87,9 +98,28 @@ class UserViewSet(viewsets.ModelViewSet):
             favorites.games.remove(game)
             favorites.save()
         favorites = Favorites.objects.get(user=user)
-        print(favorites.games)
-        Favorites
         return JsonResponse(FavoritesSerializer(instance=favorites, context=serializer_context).data, safe=False)
+
+    @action(detail=True, methods=['GET', 'POST', 'DELETE'], url_path='friends', url_name='friends')
+    def get_friends(self, request, username=None):
+        if request.user.username != username:
+            return Response(data={"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+        user = User.objects.get(username=username)
+        friends_list = Friends.objects.get(user=user)
+        serializer_context = {
+            'request': request,
+        }
+        if request.method == 'POST':
+            friend = User.objects.get(username=request.data['username'])
+            print(friend)
+            friends_list.friends.add(friend)
+        elif request.method == 'DELETE':
+            friend = User.objects.get(username=request.data['username'])
+            friends_list.friends.remove(friend)
+            friends_list.save()
+        
+        return JsonResponse(FriendsSerializer(instance=friends_list, context=serializer_context).data, safe=False)
+
 
     def get_permissions(self):
         """
@@ -100,3 +130,5 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [IsOwner]
         return [permission() for permission in permission_classes]
+
+    
