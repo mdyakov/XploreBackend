@@ -20,3 +20,7 @@ class Favorites(models.Model):
 
     def __str__(self):
         return "User's, " + self.user.__str__() + ", favorites list."
+
+class Friends(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    friends = models.ManyToManyField(User, blank=True, related_name="friend_list")

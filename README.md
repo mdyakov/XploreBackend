@@ -88,7 +88,7 @@ Below you will find endpoints for the *Users* part of the API. All links follow 
 
 - <> - POST method - requires username in body - creates a new user based on the information sent - possible parameters: username, password, email, groups
 
-- **login** - POST method - returns token which you have to include in headers in all future calls(except for registering a new user)
+- **login** - POST method - returns token which you have to include in headers in all future calls(except for registering a new user). Should be included in such a way in the calls that require token: "Authorization: Token \<token\>".
 
 - **logout** - POST method - requires token in headers - deletes the token, sent
 
@@ -101,3 +101,25 @@ Below you will find endpoints for the *Users* part of the API. All links follow 
 - **\<username\>** - PATCH method - requires token - updates a user with provided username with values from body
 
 - **\<username\>** - DELETE method - requires token - deletes a user with provided username
+
+Wishlist/Favorites API
+----------
+
+Below you will find endpoints for the *Users* part of the API. All links follow same template, which is: *origin_url*/**users**/**\<username\>**/wishlist/ and  *origin_url*/**users**/**\<username\>**/favorites/
+
+- <> - GET method - requires token in headers- returns the wishlist object. Works with friend's username as well. 
+
+- <> - POST method - requires token in headers - requires **id**, **name** and **poster_url** of the game in body - creates or gets a game from the the provided id from db. After which it adds it to the list 
+
+- <> - DELETE method - requires token in headers - requires **id*** of the game in body - removes the game from the list
+
+Wishlist/Favorites API
+----------
+
+Below you will find endpoints for the *Users* part of the API. All links follow same template, which is: *origin_url*/**users**/**\<username\>**/friends/
+
+- <> - GET method - requires token in headers- returns the friends object
+
+- <> - POST method - requires token in headers - requires **username** you want to add to list in body - Adds it to the list 
+
+- <> - DELETE method - requires token in headers - requires **username*** of the user you want to remove in body - removes the user from the list
