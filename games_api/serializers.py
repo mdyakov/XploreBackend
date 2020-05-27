@@ -22,6 +22,13 @@ class StoresSerializer(serializers.Serializer):
     url = serializers.CharField(max_length=2048, required=False, allow_null=True)
     store = StoreSerializer(required=False, allow_null=True)
 
+class PlatformSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField(max_length=50, allow_null=True)
+
+class PlatformsSerializer(serializers.Serializer):
+    platform = PlatformSerializer(required=False, allow_null=True)
+
 class GameSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField(max_length=250, allow_null=True)
@@ -30,6 +37,7 @@ class GameSerializer(serializers.Serializer):
     background_image_additional = serializers.CharField(max_length=2048, required=False, allow_null=True)
     released = serializers.CharField(max_length=20, allow_null=True)
     stores = StoresSerializer(many=True, required=False, allow_null=True)
+    parent_platforms = PlatformsSerializer(many=True, required=False, allow_null=True)
     genres = GenresSerializer(many=True, required=False, allow_null=True)
     ratings = RatingsSerializer(many=True, required=False, allow_null=True)
     rating = serializers.FloatField(allow_null=True)
