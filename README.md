@@ -113,7 +113,7 @@ Below you will find endpoints for the *Users* part of the API. All links follow 
 
 - <> - DELETE method - requires token in headers - requires **id*** of the game in body - removes the game from the list
 
-Wishlist/Favorites API
+Friends API
 ----------
 
 Below you will find endpoints for the *Users* part of the API. All links follow same template, which is: *origin_url*/**users**/**\<username\>**/friends/
