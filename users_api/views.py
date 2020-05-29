@@ -22,6 +22,11 @@ class UserViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
     permission_classes = [IsOwner]  # [permissions.IsAuthenticated, IsOwner]
     authentication_classes = (authentication.TokenAuthentication,)
+    
+    def create(self, request, *args, **kwargs):
+        super(UserViewSet, self).create(request, *args, **kwargs)
+        return Response(data={"success": "Successfully created."},status=status.HTTP_200_OK)
+
     @action(detail=False, methods=['POST'], url_path='logout', url_name='logout')
     def logout(self, request):
         try:
