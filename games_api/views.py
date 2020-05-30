@@ -43,7 +43,7 @@ class SearchGames(APIView):
     def get(self, request):
         page_number = int(request.GET.get('page', 1))
         page_size = 10
-        static_params = f'ordering=name&page_size={page_size}'
+        static_params = f'page_size={page_size}'
 
         query_string = ''
         query_params = list(request.GET.dict().items())
@@ -52,7 +52,7 @@ class SearchGames(APIView):
             param_name = param[0]
             param_value = param[1]
 
-            if not param_value or param_name == 'page' or param_name == 'ordering' or param_name == 'page_size':
+            if not param_value or param_name == 'page' or param_name == 'page_size':
                 continue
 
             query_string += f'&{param_name}={param_value}'
