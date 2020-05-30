@@ -30,6 +30,8 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['PATCH'], url_path='updatepass', url_name='updatepass')
     def update_password(self, request, username=None):
         user = User.objects.get(username=request.user.username)
+        if request.user.username != username:
+            return Response(data={"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
         user.set_password(request.data['password'])
         user.save()
         return Response(data={"success": "Successfully changed password."},
@@ -114,7 +116,6 @@ class UserViewSet(viewsets.ModelViewSet):
         token_user = User.objects.get(username=request.user.username)
         friends_list = Friends.objects.get(user=token_user)
         user = User.objects.get(username=username)
-        print("??",user not in friends_list.friends.all())
         if request.user.username != username:
             return Response(data={"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
         elif user in friends_list.friends.all():
@@ -125,12 +126,10 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer_context = {
             'request': request,
         }
-        print(request.method)
         if request.method == 'POST':
             game, exists = Game.objects.get_or_create(id=request.data['id'],
                                                   name=request.data['name'],
                                                   poster_url=request.data['poster_url'])
-            print(game)
             favorites.games.add(game)
         elif request.method == 'DELETE':
             game = Game.objects.get(id=request.data['id'])
@@ -150,7 +149,6 @@ class UserViewSet(viewsets.ModelViewSet):
         }
         if request.method == 'POST':
             friend = User.objects.get(username=request.data['username'])
-            print(friend)
             friends_list.friends.add(friend)
         elif request.method == 'DELETE':
             friend = User.objects.get(username=request.data['username'])
