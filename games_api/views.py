@@ -43,7 +43,7 @@ class SearchGames(APIView):
     def get(self, request):
         page_number = int(request.GET.get('page', 1))
         page_size = 10
-        static_params = f'ordering=-rating&page_size={page_size}'
+        static_params = f'ordering=name&page_size={page_size}'
 
         query_string = ''
         query_params = list(request.GET.dict().items())
