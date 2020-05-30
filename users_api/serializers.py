@@ -14,7 +14,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         Wishlist.objects.create(user=user)
         Favorites.objects.create(user=user)
         Friends.objects.create(user=user)
-        ProfilePicture.objects.create(user=user, image="no-profile-picture.jpg"
+        ProfilePicture.objects.create(user=user, image="no-profile-picture.jpg")
+        return user
     def to_representation(self, obj):
         ret = super(UserSerializer, self).to_representation(obj)
         ret.pop('password')
