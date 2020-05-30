@@ -3,10 +3,12 @@ from rest_framework.response import Response
 from .serializers import GameSerializer, GameRecommendationsSerializer, GamesResultsSerializer, FiltersResultsSerializer
 from .models import Game
 from .rapid_api_helper import get_json
+from rest_framework import status
 import json
 import datetime
 import os
 from django.conf import settings
+from django.http import JsonResponse
 
 class GetNewTrendingGames(APIView):
     def get(self, request):
@@ -86,13 +88,21 @@ class GetRecommendations(APIView):
         game = get_json(endpoint)        
         serializer = GameRecommendationsSerializer(data=game, many=False)
         serializer.is_valid()
-        
-        date = datetime.datetime.strptime(serializer.validated_data['released'], '%Y-%m-%d')
-        date = ((datetime.datetime.today().year - date.year) * 12 + (datetime.datetime.today().month - date.month))/10
-        metacritic = serializer.validated_data['metacritic']/10
-        genres = serializer.validated_data['genres']
-        prediction = predict([metacritic, genres, date],5)
-        return Response(prediction)
+        try:
+            date = datetime.datetime.strptime(serializer.validated_data['released'], '%Y-%m-%d')
+            date = ((datetime.datetime.today().year - date.year) * 12 + (datetime.datetime.today().month - date.month))/10
+            metacritic = serializer.validated_data['metacritic']/10 if serializer.validated_data['metacritic'] else 6
+            genres = serializer.validated_data['genres']
+            predictions = predict([metacritic, genres, date],5)
+            response = []
+            for prediction in predictions:
+                game = get_json('games?search='+prediction)
+                game = game['results'][0]
+                response.append(GameSerializer(instance=game).data)
+            return JsonResponse(response, safe=False)
+        except:
+            return Response(data={"detail": "No game with such ID exists"}, 
+            status=status.HTTP_404_NOT_FOUND)
 
 def get_filter_serialized_result(json):
     serializer = FiltersResultsSerializer(data=json)
