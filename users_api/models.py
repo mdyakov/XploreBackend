@@ -24,3 +24,13 @@ class Favorites(models.Model):
 class Friends(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     friends = models.ManyToManyField(User, blank=True, related_name="friend_list")
+
+def profilePicture(instance, filename):
+    return '/'.join( [str(instance.id), filename] )
+
+class ProfilePicture(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(
+            upload_to=profilePicture,
+            max_length=254, blank=True, null=True
+        )

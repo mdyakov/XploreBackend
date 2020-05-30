@@ -4,13 +4,13 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, permissions, authentication, status
 from rest_framework.decorators import action, api_view, renderer_classes
 from rest_framework.response import Response
-from users_api.serializers import UserSerializer, GameSerializer, WishlistSerializer, FavoritesSerializer, FriendsSerializer
+from users_api.serializers import UserSerializer, GameSerializer, WishlistSerializer, FavoritesSerializer, FriendsSerializer, ProfilePictureSerializer
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.authtoken.models import Token
 from django.http import HttpResponse, JsonResponse
 from .permissions import IsOwner
-from .models import Game, Favorites, Wishlist, Friends
+from .models import Game, Favorites, Wishlist, Friends, ProfilePicture
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -26,6 +26,33 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         super(UserViewSet, self).create(request, *args, **kwargs)
         return Response(data={"success": "Successfully created."},status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['PATCH'], url_path='updatepass', url_name='updatepass')
+    def update_password(self, request, username=None):
+        user = User.objects.get(username=request.user.username)
+        if request.user.username != username:
+            return Response(data={"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+        user.set_password(request.data['password'])
+        user.save()
+        return Response(data={"success": "Successfully changed password."},
+                        status=status.HTTP_200_OK)
+    @action(detail=True, methods=['POST','PATCH'], url_path='profilepicture', url_name='profilepicture')
+    def profile_picture(self, request, username=None):
+        user = User.objects.get(username=request.user.username)
+        if request.user.username != username:
+            return Response(data={"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+        try:
+            file = request.data['file']
+        except KeyError:
+            raise ParseError('Request has no resource file attached')
+        if request.method=='POST':
+            profilePicture = ProfilePicture.objects.create(image=file, user=user)
+        else:
+            profilePicture = ProfilePicture.objects.get(user=user)
+            profilePicture.image = file
+            profilePicture.save()
+        return Response(data={"success": "Success!"},
+                        status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['POST'], url_path='logout', url_name='logout')
     def logout(self, request):
@@ -43,8 +70,17 @@ class UserViewSet(viewsets.ModelViewSet):
             'request': request,
         }
         user = Token.objects.get(key=request.user.auth_token).user
-        print(user)
-        return JsonResponse(UserSerializer(instance=user, context=serializer_context).data, safe=False)
+        wishlist = Wishlist.objects.get(user=user)
+        favorites = Favorites.objects.get(user=user)
+        friends = Friends.objects.get(user=user)
+        profilePicture = ProfilePicture.objects.get(user=user)
+        Response = {}
+        Response['user'] = UserSerializer(instance=user, context=serializer_context).data
+        Response['favorites'] = FavoritesSerializer(instance=favorites, context=serializer_context).data
+        Response['wishlist'] = WishlistSerializer(instance=wishlist, context=serializer_context).data
+        Response['friends'] = FriendsSerializer(instance=friends, context=serializer_context).data
+        Response['profilePicture'] = ProfilePictureSerializer(instance=profilePicture, context=serializer_context).data
+        return JsonResponse(Response, safe=False)
 
     @action(detail=True, methods=['GET', 'POST', 'DELETE'], url_path='wishlist', url_name='wishlist')
     def wishlist(self, request, username=None):
@@ -80,7 +116,6 @@ class UserViewSet(viewsets.ModelViewSet):
         token_user = User.objects.get(username=request.user.username)
         friends_list = Friends.objects.get(user=token_user)
         user = User.objects.get(username=username)
-        print("??",user not in friends_list.friends.all())
         if request.user.username != username:
             return Response(data={"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
         elif user in friends_list.friends.all():
@@ -91,12 +126,10 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer_context = {
             'request': request,
         }
-        print(request.method)
         if request.method == 'POST':
             game, exists = Game.objects.get_or_create(id=request.data['id'],
                                                   name=request.data['name'],
                                                   poster_url=request.data['poster_url'])
-            print(game)
             favorites.games.add(game)
         elif request.method == 'DELETE':
             game = Game.objects.get(id=request.data['id'])
@@ -116,7 +149,6 @@ class UserViewSet(viewsets.ModelViewSet):
         }
         if request.method == 'POST':
             friend = User.objects.get(username=request.data['username'])
-            print(friend)
             friends_list.friends.add(friend)
         elif request.method == 'DELETE':
             friend = User.objects.get(username=request.data['username'])
