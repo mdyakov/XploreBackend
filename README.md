@@ -92,7 +92,7 @@ Below you will find endpoints for the *Users* part of the API. All links follow 
 
 - **logout** - POST method - requires token in headers - deletes the token, sent
 
-- **me** - GET method - requires token in headers - returns a user that owns the token sent in headers
+- **me** - GET method - requires token in headers - returns a user that owns the token sent in headers, as well as profile picture, list of his friends, wishlist and favorites.
 
 - **\<username\>** - GET method - requires token - returns a user with provided username
 
@@ -102,7 +102,9 @@ Below you will find endpoints for the *Users* part of the API. All links follow 
 
 - **\<username\>** - DELETE method - requires token - deletes a user with provided username
 
-- **\<username\>**/profilepicture/ - POST method -  - requires token - adds a profile picture to the specified user
+- **\<username\>**/change_pass/ - PATCH method -  - requires token - changes password
+
+- **\<username\>**/profilepicture/ - POST/PATCH method -  - requires token - adds/updates a profile picture to the specified user
 
 Wishlist/Favorites API
 ----------
