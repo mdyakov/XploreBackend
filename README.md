@@ -102,6 +102,8 @@ Below you will find endpoints for the *Users* part of the API. All links follow 
 
 - **\<username\>** - DELETE method - requires token - deletes a user with provided username
 
+- **\<username\>**/profilepicture/ - POST method -  - requires token - adds a profile picture to the specified user
+
 Wishlist/Favorites API
 ----------
 

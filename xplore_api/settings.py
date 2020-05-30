@@ -102,9 +102,9 @@ CORS_ORIGIN_REGEX_WHITELIST = [
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 STATIC_URL = '/static/'
-
+MEDIA_URL = '/profilePictures/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
+MEDIA_ROOT = os.path.join(BASE_DIR, 'profilePictures')
 LANGUAGE_CODE = 'en-us' 
 
 TIME_ZONE = 'UTC'
