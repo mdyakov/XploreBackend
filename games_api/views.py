@@ -44,7 +44,7 @@ class GetGenres(APIView):
 class SearchGames(APIView):
     def get(self, request):
         page_number = int(request.GET.get('page', 1))
-        page_size = 10
+        page_size = 16
         static_params = f'page_size={page_size}'
 
         query_string = ''
