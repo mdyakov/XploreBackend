@@ -11,7 +11,8 @@ from rest_framework.authtoken.models import Token
 from django.http import HttpResponse, JsonResponse
 from .permissions import IsOwner
 from .models import Game, Favorites, Wishlist, Friends, ProfilePicture
-
+from rest_framework.exceptions import ParseError
+from rest_framework import response
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -27,6 +28,33 @@ class UserViewSet(viewsets.ModelViewSet):
         super(UserViewSet, self).create(request, *args, **kwargs)
         return Response(data={"success": "Successfully created."},status=status.HTTP_200_OK)
 
+    def retrieve(self, request, *args, **kwargs):
+        # super(UserViewSet, self).retrieve(request, *args, **kwargs)
+        serializer_context = {
+            'request': request,
+        }
+        try:
+            user = User.objects.get(username=kwargs['username'])
+        except:
+            return response.Response( data={"detail": "Not found"},status=status.HTTP_404_NOT_FOUND)
+        
+        token_user = Token.objects.get(key=request.user.auth_token).user
+        friends_list = Friends.objects.get(user=token_user)
+        if not (token_user.username == user.username or user in friends_list.friends.all()):
+            return response.Response(data={"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+        
+        wishlist = Wishlist.objects.get(user=user)
+        favorites = Favorites.objects.get(user=user)
+        friends = Friends.objects.get(user=user)
+        profilePicture = ProfilePicture.objects.get(user=user)
+        Response = {}
+        Response['user'] = UserSerializer(instance=user, context=serializer_context).data
+        Response['favorites'] = FavoritesSerializer(instance=favorites, context=serializer_context).data
+        Response['wishlist'] = WishlistSerializer(instance=wishlist, context=serializer_context).data
+        Response['friends'] = FriendsSerializer(instance=friends, context=serializer_context).data
+        Response['profilePicture'] = ProfilePictureSerializer(instance=profilePicture, context=serializer_context).data
+        return JsonResponse(Response, safe=False)
+
     @action(detail=True, methods=['PATCH'], url_path='updatepass', url_name='updatepass')
     def update_password(self, request, username=None):
         user = User.objects.get(username=request.user.username)
@@ -36,7 +64,7 @@ class UserViewSet(viewsets.ModelViewSet):
         user.save()
         return Response(data={"success": "Successfully changed password."},
                         status=status.HTTP_200_OK)
-    @action(detail=True, methods=['POST','PATCH'], url_path='profilepicture', url_name='profilepicture')
+    @action(detail=True, methods=['PATCH'], url_path='profilepicture', url_name='profilepicture')
     def profile_picture(self, request, username=None):
         user = User.objects.get(username=request.user.username)
         if request.user.username != username:
@@ -45,12 +73,9 @@ class UserViewSet(viewsets.ModelViewSet):
             file = request.data['file']
         except KeyError:
             raise ParseError('Request has no resource file attached')
-        if request.method=='POST':
-            profilePicture = ProfilePicture.objects.create(image=file, user=user)
-        else:
-            profilePicture = ProfilePicture.objects.get(user=user)
-            profilePicture.image = file
-            profilePicture.save()
+        profilePicture = ProfilePicture.objects.get(user=user)
+        profilePicture.image = file
+        profilePicture.save()
         return Response(data={"success": "Success!"},
                         status=status.HTTP_200_OK)
 
@@ -84,6 +109,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['GET', 'POST', 'DELETE'], url_path='wishlist', url_name='wishlist')
     def wishlist(self, request, username=None):
+        serializer_context = {
+            'request': request,
+        }
         token_user = User.objects.get(username=request.user.username)
         friends_list = Friends.objects.get(user=token_user)
         user = User.objects.get(username=username)
@@ -113,6 +141,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['GET', 'POST', 'DELETE'], url_path='favorites', url_name='favorites')
     def get_favorites(self, request, username=None):
+        serializer_context = {
+            'request': request,
+        }
         token_user = User.objects.get(username=request.user.username)
         friends_list = Friends.objects.get(user=token_user)
         user = User.objects.get(username=username)
