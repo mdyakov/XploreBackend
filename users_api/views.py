@@ -12,7 +12,6 @@ from django.http import HttpResponse, JsonResponse
 from .permissions import IsOwner
 from .models import Game, Favorites, Wishlist, Friends, ProfilePicture
 from rest_framework.exceptions import ParseError
-from rest_framework import response
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -36,24 +35,24 @@ class UserViewSet(viewsets.ModelViewSet):
         try:
             user = User.objects.get(username=kwargs['username'])
         except:
-            return response.Response( data={"detail": "Not found"},status=status.HTTP_404_NOT_FOUND)
+            return Response( data={"detail": "Not found"},status=status.HTTP_404_NOT_FOUND)
         
         token_user = Token.objects.get(key=request.user.auth_token).user
         friends_list = Friends.objects.get(user=token_user)
         if not (token_user.username == user.username or user in friends_list.friends.all()):
-            return response.Response(data={"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+            return Response(data={"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
         
         wishlist = Wishlist.objects.get(user=user)
         favorites = Favorites.objects.get(user=user)
         friends = Friends.objects.get(user=user)
         profilePicture = ProfilePicture.objects.get(user=user)
-        Response = {}
-        Response['user'] = UserSerializer(instance=user, context=serializer_context).data
-        Response['favorites'] = FavoritesSerializer(instance=favorites, context=serializer_context).data
-        Response['wishlist'] = WishlistSerializer(instance=wishlist, context=serializer_context).data
-        Response['friends'] = FriendsSerializer(instance=friends, context=serializer_context).data
-        Response['profilePicture'] = ProfilePictureSerializer(instance=profilePicture, context=serializer_context).data
-        return JsonResponse(Response, safe=False)
+        response = {}
+        response['user'] = UserSerializer(instance=user, context=serializer_context).data
+        response['favorites'] = FavoritesSerializer(instance=favorites, context=serializer_context).data
+        response['wishlist'] = WishlistSerializer(instance=wishlist, context=serializer_context).data
+        response['friends'] = FriendsSerializer(instance=friends, context=serializer_context).data
+        response['profilePicture'] = ProfilePictureSerializer(instance=profilePicture, context=serializer_context).data
+        return JsonResponse(response, safe=False)
 
     @action(detail=True, methods=['PATCH'], url_path='updatepass', url_name='updatepass')
     def update_password(self, request, username=None):
@@ -99,13 +98,13 @@ class UserViewSet(viewsets.ModelViewSet):
         favorites = Favorites.objects.get(user=user)
         friends = Friends.objects.get(user=user)
         profilePicture = ProfilePicture.objects.get(user=user)
-        Response = {}
-        Response['user'] = UserSerializer(instance=user, context=serializer_context).data
-        Response['favorites'] = FavoritesSerializer(instance=favorites, context=serializer_context).data
-        Response['wishlist'] = WishlistSerializer(instance=wishlist, context=serializer_context).data
-        Response['friends'] = FriendsSerializer(instance=friends, context=serializer_context).data
-        Response['profilePicture'] = ProfilePictureSerializer(instance=profilePicture, context=serializer_context).data
-        return JsonResponse(Response, safe=False)
+        response = {}
+        response['user'] = UserSerializer(instance=user, context=serializer_context).data
+        response['favorites'] = FavoritesSerializer(instance=favorites, context=serializer_context).data
+        response['wishlist'] = WishlistSerializer(instance=wishlist, context=serializer_context).data
+        response['friends'] = FriendsSerializer(instance=friends, context=serializer_context).data
+        response['profilePicture'] = ProfilePictureSerializer(instance=profilePicture, context=serializer_context).data
+        return JsonResponse(response, safe=False)
 
     @action(detail=True, methods=['GET', 'POST', 'DELETE'], url_path='wishlist', url_name='wishlist')
     def wishlist(self, request, username=None):
@@ -185,8 +184,15 @@ class UserViewSet(viewsets.ModelViewSet):
             friend = User.objects.get(username=request.data['username'])
             friends_list.friends.remove(friend)
             friends_list.save()
-        
-        return JsonResponse(FriendsSerializer(instance=friends_list, context=serializer_context).data, safe=False)
+        response =[]
+        for friend in friends_list.friends.all():
+            picture = ProfilePicture.objects.get(user=friend)
+            cell = {}
+            cell['user'] = UserSerializer(instance=user, context=serializer_context).data
+            cell['picture'] = ProfilePictureSerializer(instance=picture, context=serializer_context).data
+            response.append(cell)
+            
+        return JsonResponse(data=response, safe=False)
 
 
     def get_permissions(self):
