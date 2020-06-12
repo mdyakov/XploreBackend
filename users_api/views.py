@@ -98,12 +98,19 @@ class UserViewSet(viewsets.ModelViewSet):
         favorites = Favorites.objects.get(user=user)
         friends = Friends.objects.get(user=user)
         profilePicture = ProfilePicture.objects.get(user=user)
+        
         response = {}
         response['user'] = UserSerializer(instance=user, context=serializer_context).data
         response['favorites'] = FavoritesSerializer(instance=favorites, context=serializer_context).data
         response['wishlist'] = WishlistSerializer(instance=wishlist, context=serializer_context).data
-        response['friends'] = FriendsSerializer(instance=friends, context=serializer_context).data
         response['profilePicture'] = ProfilePictureSerializer(instance=profilePicture, context=serializer_context).data
+        response['friends'] =[]
+        for friend in friends.friends.all():
+            picture = ProfilePicture.objects.get(user=friend)
+            cell = {}
+            cell['user'] = UserSerializer(instance=friend, context=serializer_context).data
+            cell['picture'] = ProfilePictureSerializer(instance=picture, context=serializer_context).data
+            response['friends'].append(cell)
         return JsonResponse(response, safe=False)
 
     @action(detail=True, methods=['GET', 'POST', 'DELETE'], url_path='wishlist', url_name='wishlist')
@@ -188,7 +195,7 @@ class UserViewSet(viewsets.ModelViewSet):
         for friend in friends_list.friends.all():
             picture = ProfilePicture.objects.get(user=friend)
             cell = {}
-            cell['user'] = UserSerializer(instance=user, context=serializer_context).data
+            cell['user'] = UserSerializer(instance=friend, context=serializer_context).data
             cell['picture'] = ProfilePictureSerializer(instance=picture, context=serializer_context).data
             response.append(cell)
             
