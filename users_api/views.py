@@ -65,6 +65,9 @@ class UserViewSet(viewsets.ModelViewSet):
                         status=status.HTTP_200_OK)
     @action(detail=True, methods=['PATCH'], url_path='profilepicture', url_name='profilepicture')
     def profile_picture(self, request, username=None):
+        serializer_context = {
+            'request': request,
+        }
         user = User.objects.get(username=request.user.username)
         if request.user.username != username:
             return Response(data={"detail": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
@@ -75,8 +78,8 @@ class UserViewSet(viewsets.ModelViewSet):
         profilePicture = ProfilePicture.objects.get(user=user)
         profilePicture.image = file
         profilePicture.save()
-        return Response(data={"success": "Success!"},
-                        status=status.HTTP_200_OK)
+        
+        return JsonResponse(ProfilePictureSerializer(instance=profilePicture, context=serializer_context).data, safe=False)
 
     @action(detail=False, methods=['POST'], url_path='logout', url_name='logout')
     def logout(self, request):
